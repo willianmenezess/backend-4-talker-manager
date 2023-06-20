@@ -6,6 +6,7 @@ const tokenValidation = require('../middlewares/tokenValidation');
 const nameValidation = require('../middlewares/nameValidation');
 const ageValidation = require('../middlewares/ageValidation');
 const { talkValidations1, talkValidations2 } = require('../middlewares/talkValidation');
+const searchValidation = require('../middlewares/searchValidation');
 
 const talkerRoute = express.Router();
 const status500 = { message: 'Erro interno' };
@@ -19,6 +20,22 @@ talkerRoute.get('/', async (_req, res) => {
     res.status(500).json(status500);
   }
 });
+
+talkerRoute.get('/search', tokenValidation, searchValidation, async (req, res) => {
+  try { 
+   const { q } = req.query;
+   const talkers = await readTalkerFiles();
+   const filteredTalkers = talkers.filter((talker) => talker.name.includes(q));
+   if (filteredTalkers.length === 0) {
+     return res.status(200).json([]);
+   }
+   res.status(200).json(filteredTalkers);
+ } catch (err) {
+   res.status(500).json(status500);
+ }
+});
+
+module.exports = talkerRoute;
 
 talkerRoute.get('/:id', async (req, res) => {
   try {
@@ -70,5 +87,3 @@ talkerRoute.delete('/:id', tokenValidation, async (req, res) => {
     res.status(500).json(status500);
   }
 });
-
-module.exports = talkerRoute;
