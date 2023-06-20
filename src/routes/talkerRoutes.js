@@ -1,5 +1,11 @@
 const express = require('express');
-const { readTalkerFiles, getTalkerById, writeTalkerFiles } = require('../utils/readAndWriteFiles');
+
+const { readTalkerFiles, getTalkerById, writeTalkerFiles, 
+  updateTalkerById } = require('../utils/readAndWriteFiles');
+const tokenValidation = require('../middlewares/tokenValidation');
+const nameValidation = require('../middlewares/nameValidation');
+const ageValidation = require('../middlewares/ageValidation');
+const { talkValidations1, talkValidations2 } = require('../middlewares/talkValidation');
 
 const talkerRoute = express.Router();
 
@@ -25,11 +31,27 @@ talkerRoute.get('/:id', async (req, res) => {
   }
 });
 
-talkerRoute.post('/', async (req, res) => {
+  const arrayValidations = [tokenValidation, nameValidation, 
+    ageValidation, talkValidations1, talkValidations2];
+
+talkerRoute.post('/', arrayValidations, async (req, res) => {
   try {
-    const { talker } = req.body;
+    const talker = req.body;
     const newTalker = await writeTalkerFiles(talker);
-    res.status(201).json(newTalker);
+    console.log(newTalker);
+    return res.status(201).json(newTalker);
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro interno' });
+  }
+});
+
+talkerRoute.put('/:id', arrayValidations, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const talker = req.body;
+    const newTalker = await updateTalkerById(id, talker);
+    if (!newTalker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    res.status(200).json(newTalker);
   } catch (err) {
     res.status(500).json({ message: 'Erro interno' });
   }
