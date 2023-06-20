@@ -1,7 +1,7 @@
 const express = require('express');
 
 const { readTalkerFiles, getTalkerById, writeTalkerFiles, 
-  updateTalkerById } = require('../utils/readAndWriteFiles');
+  updateTalkerById, deleteTalkerById } = require('../utils/readAndWriteFiles');
 const tokenValidation = require('../middlewares/tokenValidation');
 const nameValidation = require('../middlewares/nameValidation');
 const ageValidation = require('../middlewares/ageValidation');
@@ -56,5 +56,19 @@ talkerRoute.put('/:id', arrayValidations, async (req, res) => {
     res.status(500).json({ message: 'Erro interno' });
   }
 });
+
+talkerRoute.delete('/:id', tokenValidation, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedTalker = await deleteTalkerById(id);
+    if (!deletedTalker) {
+      return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    }
+    res.status(204).json();
+  } catch (err) {
+    res.status(500).json({ message: 'Erro interno' });
+  }
+});
+
 
 module.exports = talkerRoute;
