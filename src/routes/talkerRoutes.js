@@ -8,6 +8,7 @@ const ageValidation = require('../middlewares/ageValidation');
 const { talkValidations1, talkValidations2 } = require('../middlewares/talkValidation');
 
 const talkerRoute = express.Router();
+const status500 = { message: 'Erro interno' };
 
 talkerRoute.get('/', async (_req, res) => {
   try {
@@ -15,7 +16,7 @@ talkerRoute.get('/', async (_req, res) => {
     if (!talkers || talkers.length === 0) return res.status(200).json([]);
     res.status(200).json(talkers);
   } catch (err) {
-    res.status(500).json({ message: 'Erro interno' });
+    res.status(500).json(status500);
   }
 });
 
@@ -27,7 +28,7 @@ talkerRoute.get('/:id', async (req, res) => {
     if (!talker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
     res.status(200).json(talker);
   } catch (err) {
-    res.status(500).json({ message: 'Erro interno' });
+    res.status(500).json(status500);
   }
 });
 
@@ -41,7 +42,7 @@ talkerRoute.post('/', arrayValidations, async (req, res) => {
     console.log(newTalker);
     return res.status(201).json(newTalker);
   } catch (err) {
-    return res.status(500).json({ message: 'Erro interno' });
+    return res.status(500).json(status500);
   }
 });
 
@@ -53,7 +54,7 @@ talkerRoute.put('/:id', arrayValidations, async (req, res) => {
     if (!newTalker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
     res.status(200).json(newTalker);
   } catch (err) {
-    res.status(500).json({ message: 'Erro interno' });
+    res.status(500).json(status500);
   }
 });
 
@@ -66,9 +67,8 @@ talkerRoute.delete('/:id', tokenValidation, async (req, res) => {
     }
     res.status(204).json();
   } catch (err) {
-    res.status(500).json({ message: 'Erro interno' });
+    res.status(500).json(status500);
   }
 });
-
 
 module.exports = talkerRoute;
