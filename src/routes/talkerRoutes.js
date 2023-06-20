@@ -7,6 +7,8 @@ const nameValidation = require('../middlewares/nameValidation');
 const ageValidation = require('../middlewares/ageValidation');
 const { talkValidations1, talkValidations2 } = require('../middlewares/talkValidation');
 const searchValidation = require('../middlewares/searchValidation');
+const searchTermFiltered = require('../middlewares/searchTermFiltered');
+const searchRateFiltered = require('../middlewares/searchRateFiltered');
 
 const talkerRoute = express.Router();
 const status500 = { message: 'Erro interno' };
@@ -21,17 +23,15 @@ talkerRoute.get('/', async (_req, res) => {
   }
 });
 
-talkerRoute.get('/search', tokenValidation, searchValidation, async (req, res) => {
+const arraySearch = [searchTermFiltered, searchRateFiltered];
+const validations = [tokenValidation, searchValidation];
+
+talkerRoute.get('/search', validations, arraySearch, async (req, res) => {
   try { 
-   const { q } = req.query;
-   const talkers = await readTalkerFiles();
-   const filteredTalkers = talkers.filter((talker) => talker.name.includes(q));
-   if (filteredTalkers.length === 0) {
-     return res.status(200).json([]);
-   }
-   res.status(200).json(filteredTalkers);
- } catch (err) {
-   res.status(500).json(status500);
+    const { filteredTalkers } = req;
+    res.status(200).json(filteredTalkers);
+   } catch (err) {
+    res.status(500).json(status500);
  }
 });
 
@@ -41,7 +41,6 @@ talkerRoute.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const talker = await getTalkerById(id);
-  // colocar essa validação no middleware
     if (!talker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
     res.status(200).json(talker);
   } catch (err) {
