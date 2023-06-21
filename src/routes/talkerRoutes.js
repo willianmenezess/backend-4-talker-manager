@@ -9,6 +9,8 @@ const { talkValidations1, talkValidations2 } = require('../middlewares/talkValid
 const searchValidation = require('../middlewares/searchValidation');
 const searchTermFiltered = require('../middlewares/searchTermFiltered');
 const searchRateFiltered = require('../middlewares/searchRateFiltered');
+const { getAll } = require('../talkersDB');
+const formatTalkers = require('../utils/formatTalkers');
 
 const talkerRoute = express.Router();
 const status500 = { message: 'Erro interno' };
@@ -23,6 +25,17 @@ talkerRoute.get('/', async (_req, res) => {
   }
 });
 
+talkerRoute.get('/db', async (_req, res) => {
+  // try {
+    const talkers = await getAll();
+    if (!talkers || talkers.length === 0) return res.status(200).json([]);
+    const newTalkers = formatTalkers(talkers);
+    res.status(200).json(newTalkers);
+  // } catch (err) {
+  //   res.status(500).json(status500);
+  // }
+});
+
 const arraySearch = [searchTermFiltered, searchRateFiltered];
 const validations = [tokenValidation, searchValidation];
 
@@ -34,8 +47,6 @@ talkerRoute.get('/search', validations, arraySearch, async (req, res) => {
     res.status(500).json(status500);
  }
 });
-
-module.exports = talkerRoute;
 
 talkerRoute.get('/:id', async (req, res) => {
   try {
@@ -50,11 +61,11 @@ talkerRoute.get('/:id', async (req, res) => {
 
   const arrayValidations = [tokenValidation, nameValidation, 
     ageValidation, talkValidations1, talkValidations2];
-
-talkerRoute.post('/', arrayValidations, async (req, res) => {
-  try {
-    const talker = req.body;
-    const newTalker = await writeTalkerFiles(talker);
+    
+    talkerRoute.post('/', arrayValidations, async (req, res) => {
+      try {
+        const talker = req.body;
+        const newTalker = await writeTalkerFiles(talker);
     console.log(newTalker);
     return res.status(201).json(newTalker);
   } catch (err) {
@@ -86,3 +97,19 @@ talkerRoute.delete('/:id', tokenValidation, async (req, res) => {
     res.status(500).json(status500);
   }
 });
+
+talkerRoute.patch('/talker/rate/:id', tokenValidation, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rate } = req.body;
+    const talker = await getTalkerById(id);
+    if (!talker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    talker.talk.rate = rate;
+    await updateTalkerById(id, talker);
+    res.status(204).json();
+  } catch (err) {
+    res.status(500).json(status500);
+  }
+});
+
+module.exports = talkerRoute;
