@@ -12,6 +12,7 @@ const searchRateFiltered = require('../middlewares/searchRateFiltered');
 const { getAll } = require('../talkersDB');
 const formatTalkers = require('../utils/formatTalkers');
 const rateValidation = require('../middlewares/patchValidations');
+const searchDateFiltered = require('../middlewares/searchDateFiltered');
 
 const talkerRoute = express.Router();
 const status500 = { message: 'Erro interno' };
@@ -37,7 +38,7 @@ talkerRoute.get('/db', async (_req, res) => {
   // }
 });
 
-const arraySearch = [searchTermFiltered, searchRateFiltered];
+const arraySearch = [searchTermFiltered, searchRateFiltered, searchDateFiltered];
 const validations = [tokenValidation, searchValidation];
 
 talkerRoute.get('/search', validations, arraySearch, async (req, res) => {
