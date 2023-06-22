@@ -1,44 +1,21 @@
-# Boas-vindas ao repositório do projeto Talker Manager
+# Projeto Talker Manager
 
-Para realizar o projeto, atente-se a cada passo descrito a seguir, e se tiver qualquer dúvida, nos envie por _Slack_! #vqv&nbsp;🚀
+Este foi o quarto Projeto desenvolvido no módulo de Back-End do curso de desenvolvimento web/software da Trybe. A aplicação é uma API de um CRUD de palestrantes onde é possível cadastrar, visualizar, pesquisar, editar e excluir informações sobre os talkers.
 
-Aqui você vai encontrar os detalhes de como estruturar o desenvolvimento do seu projeto a partir deste repositório, utilizando uma branch específica e um _Pull Request_ para colocar seus códigos.
+# Rotas
 
-<details>
-<summary>📃 Termos e acordos</summary><br>
+GET | http://localhost:3001/talker - retorna as informações das pessoas palestrantes cadastradas.
 
-Ao iniciar este projeto, você concorda com as diretrizes do [Código de Conduta](https://app.betrybe.com/learn/student-manual/codigo-de-conduta-da-pessoa-estudante) e do [Manual da Pessoa Estudante](https://app.betrybe.com/learn/student-manual) da Trybe.
+GET | http://localhost:3001/talker/:id: - retorna uma pessoa palestrante com base no id da rota.
 
-</details>
+GET | http://localhost:3001/search?q=name - retorna os palestrantes que contenham em seu nome o termo pesquisado no queryParam da URL.
 
-## Entregáveis
+POST | http://localhost:3001/login - recebe no corpo da requisição os campos email e password e retorna um token aleatório de 16 caracteres. Este token será utilizado pelas requisições das próximas rotas.
 
-<details>
-  <summary>🤷🏽‍♀️ Como entregar</summary><br />
+PUT | http://localhost:3001/talker/:id: - edita uma pessoa palestrante com base no id da rota, sem alterar o id registrado.
 
-  Para entregar o seu projeto você deverá criar um _Pull Request_ neste repositório.
+DELETE | http://localhost:3001/talker/:id - deleta uma pessoa palestrande cadastrada.
 
-  Lembre-se que você pode consultar nosso conteúdo sobre [Git & GitHub](https://app.betrybe.com/learn/course/5e938f69-6e32-43b3-9685-c936530fd326/module/fc998c60-386e-46bc-83ca-4269beb17e17/section/fe827a71-3222-4b4d-a66f-ed98e09961af/day/35e03d5e-6341-4a8c-84d1-b4308b2887ef/lesson/573db55d-f451-455d-bdb5-66545668f436) e nosso [Blog - Git & GitHub](https://blog.betrybe.com/tecnologia/git-e-github/) sempre que precisar!
-</details>
-
-<details>
-  <summary>👨‍💻 O que deverá ser desenvolvido</summary><br />
-
-  Você irá construir uma aplicação de cadastro de talkers (palestrantes) em que será possível cadastrar, visualizar, pesquisar, editar e excluir informações. Para isso você deverá:
-
-  1. Desenvolver uma API de um `CRUD` (**C**reate, **R**ead, **U**pdate e **D**elete) de palestrantes (talkers) e;
-  2. Desenvolver alguns endpoints que irão ler e escrever em um arquivo utilizando o módulo `fs`.
-
-</details>
-
-<details>
-  <summary>🗓 Data de Entrega</summary><br />
-  
-  - Este projeto é individual
-  - Serão `2` dias de projeto
-  - Data de entrega para avaliação regular do projeto: `27/06/2023 14:00`
-
-</details>
 
 ## Orientações
 
